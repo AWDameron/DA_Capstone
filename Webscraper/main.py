@@ -14,19 +14,19 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 driver.get('https://www.linkedin.com/login')
 time.sleep(2)
 
-with open("config.json") as cred:
+with open("./config.json") as cred:
     config = json.load(cred)
 
-username = config["linkedin_email"]
-password = config["linkedin_password"]
+username = config("linkedin_email")
+password = config("linkedin_password")
 
-email_input = driver.find_element(By.ID,"Email")
+email_input = driver.find_element(By.ID,"username")
 email_input.send_keys(username)
 
-password_input = driver.find_element(By.ID,"Password")
+password_input = driver.find_element(By.ID,"password")
 password_input.send_keys(password)
 
-login_button = driver.find_element(By.XPATH,"type='submit'")
+login_button = driver.find_element(By.XPATH,"//button[@type='submit']")
 login_button.click()
 
-time.sleep(5)
+input("Press enter after entering in your authentication code")
