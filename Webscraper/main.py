@@ -59,36 +59,36 @@ def search_and_scrape(search,post_total):
     posts_button = driver.find_element(By.XPATH,"//*[@id='search-reusables__filters-bar']/ul/li[1]/button")
     posts_button.click()
     time.sleep(3)
-
-    post_elements = driver.find_elements(By.CLASS_NAME, "feed-shared-update-v2__description")
-    posts_data  = []
+   
+    
+    posts_data  = set()
 
     while len(posts_data) < post_total:
+        post_elements = driver.find_elements(By.CLASS_NAME, "feed-shared-update-v2__description")
         for post in post_elements:
             # added try catch from a chat gpt recommendation during my code review
             try:
                 post_text = post.text
                 post_html = post.get_attribute('outerHTML')
 
-                posts_data.append({'post_html': post_html,
-                                'post_text': post_text})
+                posts_data.add((post_html,post_text))
             
             except Exception as e:
                 print(f"Error while scraping post: {e}")
             time.sleep(1)
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(3)
-
-        
+   
+    posts_data = [{"post_html": html, "post_text": text} for html,text in posts_data]    
     with open(f'{search}.json','w', encoding='utf-8') as json_file:
         json.dump(posts_data, json_file, ensure_ascii=False, indent=4)
         
-    print(f'Scrape successful! {len(posts_data)} posts saved to {search}.json')
+    print(f'Scrape successful? {len(posts_data)} posts saved to {search}.json')
     return
 
 scraper_log_in(driver)
 
-search_and_scrape('Resume Tips',20)
+search_and_scrape('Resume Tips',100)
 
 
 #for search in search_list:
