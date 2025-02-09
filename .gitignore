@@ -6,3 +6,8 @@
 # ignore config file
 
 config.json
+
+
+# ingore raw data
+
+ /Raw Data

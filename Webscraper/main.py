@@ -14,14 +14,15 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), opti
 
 
 search_list = [
-    'resumetips',
-    'resume tips',
-    'jobsearch',
-    'Resume Writing Tips',
-    'Data Analysis Interviews',
-    'what languages to learn in data',
+    #'resumetips',
+    #'resume tips',
+    #'jobsearch',
+    #'Resume Writing Tips',
+    #'Data Analysis Interviews',
+    'data analysis languages',
     'data skills',
-    'interviewtips'
+    'interviewtips',
+    'data programming'
 ]
 
 #opens linkedIn
@@ -46,21 +47,24 @@ def scraper_log_in(driver):
     return
 
 
-def search_and_scrape(search,post_total):
-    time.sleep(2)
-    actions = ActionChains(driver)
+def search_and_scrape(search , post_total):
+    time.sleep(3)
     search_input = driver.find_element(By.XPATH,"//input[@placeholder='Search']")
+    time.sleep(1)
+    search_input.click()
     time.sleep(1)
     search_input.send_keys(search)
     time.sleep(1)
     search_input.send_keys(Keys.RETURN)
     time.sleep(5)
 
-    posts_button = driver.find_element(By.XPATH,"//*[@id='search-reusables__filters-bar']/ul/li[1]/button")
-    posts_button.click()
-    time.sleep(3)
+    posts_button = driver.find_element(By.XPATH, "//button[contains(@class, 'search-reusables__filter-pill-button')]")
+    # checking if the posts button has been clicked or not.
+    if posts_button.get_attribute("aria-pressed") != "true":        
+        posts_button.click()
+        time.sleep(3)
    
-    
+    count = 0
     posts_data  = set()
 
     while len(posts_data) < post_total:
@@ -70,11 +74,12 @@ def search_and_scrape(search,post_total):
             try:
                 post_text = post.text
                 post_html = post.get_attribute('outerHTML')
-
                 posts_data.add((post_html,post_text))
+                print('scrape success')
             
             except Exception as e:
                 print(f"Error while scraping post: {e}")
+            
             time.sleep(1)
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(3)
@@ -84,12 +89,21 @@ def search_and_scrape(search,post_total):
         json.dump(posts_data, json_file, ensure_ascii=False, indent=4)
         
     print(f'Scrape successful? {len(posts_data)} posts saved to {search}.json')
+    driver.refresh()
+    time.sleep(2)
+    search_input = driver.find_element(By.XPATH,"//input[@placeholder='Search']")
+    search_input.clear()
+    time.sleep(3)
     return
 
 scraper_log_in(driver)
 
-search_and_scrape('Resume Tips',100)
+# For testing purposes
+# search_and_scrape('Resume Tips',5)
+# search_and_scrape('resumetips',5)
 
 
-#for search in search_list:
-#    search_and_scrape(search)
+for search in search_list:
+    search_and_scrape(search,100)
+    print(f'{search} complete!')
+driver.close()
