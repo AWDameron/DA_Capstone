@@ -3,7 +3,6 @@ from selenium.webdriver.common.by import By # helps locate elements on the webpa
 from selenium.webdriver.common.keys import Keys # simulates user inputs
 from selenium.webdriver.chrome.service import Service 
 from webdriver_manager.chrome import ChromeDriverManager    # automatically installs the correct Chrome driver
-from selenium.webdriver.common.action_chains import ActionChains
 import time # manages time
 import json
 
@@ -14,11 +13,11 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), opti
 
 
 search_list = [
-    #'resumetips',
-    #'resume tips',
-    #'jobsearch',
-    #'Resume Writing Tips',
-    #'Data Analysis Interviews',
+    'resumetips',
+    'resume tips',
+    'jobsearch',
+    'Resume Writing Tips',
+    'Data Analysis Interviews',
     'data analysis languages',
     'data skills',
     'interviewtips',
@@ -64,7 +63,7 @@ def search_and_scrape(search , post_total):
         posts_button.click()
         time.sleep(3)
    
-    count = 0
+   
     posts_data  = set()
 
     while len(posts_data) < post_total:
@@ -99,11 +98,11 @@ def search_and_scrape(search , post_total):
 scraper_log_in(driver)
 
 # For testing purposes
-# search_and_scrape('Resume Tips',5)
-# search_and_scrape('resumetips',5)
+#search_and_scrape('terrible boss',6)
+#search_and_scrape('terribleboss',3)
 
 
-for search in search_list:
-    search_and_scrape(search,100)
-    print(f'{search} complete!')
-driver.close()
+# for search in search_list:
+#     search_and_scrape(search,3)
+#     print(f'{search} complete!')
+#driver.close()
