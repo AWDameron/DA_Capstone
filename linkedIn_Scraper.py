@@ -13,15 +13,18 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), opti
 
 
 search_list = [
-    'resumetips',
-    'resume tips',
-    'jobsearch',
-    'Resume Writing Tips',
-    'Data Analysis Interviews',
-    'data analysis languages',
-    'data skills',
-    'interviewtips',
-    'data programming'
+    #'resumetips',
+    #'resume tips',
+    #'jobsearch',
+    #'Resume Writing Tips',
+    #'Data Analysis Interviews',
+    #'data analysis languages',
+    #'data skills',
+    #'interviewtips',
+    #'data programming'
+    #'data analyst interview help',
+    #'finding data analyst jobs',
+    'analyst job search'
 ]
 
 #opens linkedIn
@@ -95,6 +98,7 @@ def search_and_scrape(search , post_total):
     time.sleep(3)
     return
 
+
 scraper_log_in(driver)
 
 # For testing purposes
@@ -102,7 +106,7 @@ scraper_log_in(driver)
 #search_and_scrape('terribleboss',3)
 
 
-# for search in search_list:
-#     search_and_scrape(search,3)
-#     print(f'{search} complete!')
-#driver.close()
+for search in search_list:
+    search_and_scrape(search,100)
+    print(f'{search} complete!')
+driver.close()
