@@ -8,6 +8,7 @@
 config.json
 
 
-# ignore raw data
+# ignore data
 
  /Raw Data
+ /Data CSV
