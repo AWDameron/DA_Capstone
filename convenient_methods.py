@@ -12,7 +12,7 @@ def emoji_organizer(text_list,file_name):
         emoji_list.extend(emojis_found) 
 
     
-    with open(f'Data CSV/{file_name}.csv', 'a', newline='', encoding='utf-8') as csvfile:
+    with open(f'Data_CSV/{file_name}.csv', 'a', newline='', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(emoji_list) 
     print(f"{file_name}.csv has been created")
@@ -23,13 +23,13 @@ def json_organizer(json_list, csv_name):
     text_list = []
 
     for file in json_list:
-        with open(f"Raw Data/{file}.json", 'r', encoding='utf-8') as file_json:
+        with open(f"Raw_Data/{file}.json", 'r', encoding='utf-8') as file_json:
             data = json.load(file_json)
             for entry in data:
                 post_text = entry.get('post_text', '').strip().replace("\n", " ")
                 text_list.append(post_text)
 
-    with open(f"Data CSV/{csv_name}", 'a', newline='', encoding='utf-8') as csvfile:
+    with open(f"Data_CSV/{csv_name}", 'a', newline='', encoding='utf-8') as csvfile:
          writer = csv.writer(csvfile, quotechar='"', quoting=csv.QUOTE_ALL)
          for text in text_list:
             writer.writerow([text])  
@@ -41,13 +41,13 @@ def CSV_duplicate_finder(csv_list,csv_name):
     text_list = []
 
     for file in csv_list:
-        with open(f"Data CSV/{file}.csv", 'r', encoding='utf-8') as file_csv:
+        with open(f"Data_CSV/{file}.csv", 'r', encoding='utf-8') as file_csv:
             data = csv.reader(file_csv)    
             for entry in data:
                 text_list.append(entry[0]) 
             
     clean_list = set(text_list)
-    with open(f"Data CSV/{csv_name}", 'a', newline='', encoding='utf-8') as csvfile:
+    with open(f"Data_CSV/{csv_name}", 'a', newline='', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile, quotechar='"', quoting=csv.QUOTE_ALL)
         for item in clean_list:
             writer.writerow([item])
@@ -55,8 +55,8 @@ def CSV_duplicate_finder(csv_list,csv_name):
     return clean_list
 
 def create_folders():
-    os.makedirs(os.path.join("Data CSV"), exist_ok=True)
-    os.makedirs(os.path.join("Raw Data"), exist_ok=True)
+    os.makedirs(os.path.join("Data_CSV"), exist_ok=True)
+    os.makedirs(os.path.join("Raw_Data"), exist_ok=True)
     return
 
 

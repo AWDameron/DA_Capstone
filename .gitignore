@@ -10,5 +10,5 @@ config.json
 
 # ignore data
 
- /Raw Data
- /Data CSV
+ /Raw_Data
+ /Data_CSV
