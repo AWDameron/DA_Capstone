@@ -3,8 +3,13 @@ import csv
 import emoji
 import os
 import convenient_lists
-
+ 
+ # checks a list for emojis and puts them into a separate CSV file
+ # For EACH list that this method reads, it will make a new row in a CSV file.
+ # emoji_organizer is specifically designed to be built into the CSV_duplicate_finder method
+ # can be nested inside of the duplicate finder method.
 def emoji_organizer(text_list,file_name):
+    create_folders()
     emoji_list = []
     
     for entry in text_list:
@@ -19,7 +24,11 @@ def emoji_organizer(text_list,file_name):
 
     return
 
+# json_organizer converts a list of json files into a csv.  Could effectively run a single 
+# file if file is placed in square brackets, but ideally it is cleaning a list of scraped JSON files
+# returns the csv_name of the newly created CSV file for faster method handling.
 def json_organizer(json_list, csv_name):
+    create_folders()
     text_list = []
 
     for file in json_list:
@@ -28,36 +37,54 @@ def json_organizer(json_list, csv_name):
             for entry in data:
                 post_text = entry.get('post_text', '').strip().replace("\n", " ")
                 text_list.append(post_text)
+        file_json.close()
 
     with open(f"Data_CSV/{csv_name}", 'a', newline='', encoding='utf-8') as csvfile:
          writer = csv.writer(csvfile, quotechar='"', quoting=csv.QUOTE_ALL)
          for text in text_list:
             writer.writerow([text])  
+    csvfile.close()
 
     print(f"Saved {len(text_list)} posts to {csv_name}")
-    return
+    return csv_name
 
-def CSV_duplicate_finder(csv_list,csv_name):
-    text_list = []
+# CSV_duplicate_finder opens a (dirty) CSV created by the json_organizer and then transfer it to a list
+# that list is turned into a SET so that all duplicates are removed and that set is then placed into a new
+# (clean) CSV file to avoid confusion. Double checks that you are not using a duplicate file name for the clean
+# and dirty file.
 
-    for file in csv_list:
-        with open(f"Data_CSV/{file}.csv", 'r', encoding='utf-8') as file_csv:
+def CSV_duplicate_finder(dirty_csv,clean_csv):
+    create_folders()
+    if dirty_csv == clean_csv:
+        print("File names should be two separate names, check method call")
+        return
+    else:
+        text_list = []
+
+        with open(f"Data_CSV/{dirty_csv}.csv", 'r', encoding='utf-8') as file_csv:
             data = csv.reader(file_csv)    
             for entry in data:
                 text_list.append(entry[0]) 
-            
-    clean_list = set(text_list)
-    with open(f"Data_CSV/{csv_name}", 'a', newline='', encoding='utf-8') as csvfile:
-        writer = csv.writer(csvfile, quotechar='"', quoting=csv.QUOTE_ALL)
-        for item in clean_list:
-            writer.writerow([item])
-    print(f'{csv_name} has {len(text_list)-len(clean_list)} duplicates of {len(text_list)} posts')
-    return clean_list
+            file_csv.close()
+                
+        clean_list = set(text_list)
+        with open(f"Data_CSV/{clean_csv}", 'a', newline='', encoding='utf-8') as csv_file:
+            writer = csv.writer(csv_file, quotechar='"', quoting=csv.QUOTE_ALL)
+            for item in clean_list:
+                writer.writerow([item])
+            csv_file.close()
+        post_list = list(clean_list)
+        print(f'{clean_csv} has {len(text_list)-len(clean_list)} duplicates of {len(text_list)} posts')
+        return post_list
 
+
+# Creates pre-equisite folders for various methods, added into the top of all methods to prevent errors when accessing or saving 
+# CSV files.  Will not make new folders if there is already a folder in place, if it finds no folder it will create them as "Data_CSV" and "Raw_Data"  
 def create_folders():
     os.makedirs(os.path.join("Data_CSV"), exist_ok=True)
     os.makedirs(os.path.join("Raw_Data"), exist_ok=True)
     return
+
 
 
 if __name__ == "__main__":

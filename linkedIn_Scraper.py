@@ -6,13 +6,7 @@ from webdriver_manager.chrome import ChromeDriverManager    # automatically inst
 import time
 import json
 import convenient_lists
-
-
-# options = webdriver.ChromeOptions()
-# options.add_argument("--start-maximized") #opens chrome in full screen
-# options.add_experimental_option('detach', True)
-# driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-
+import convenient_methods
 
 
 #closes browser
@@ -20,8 +14,10 @@ def scraper_log_out(driver):
     driver.close()
     return
 
-#Opens browser, logs into linked in
+# Opens browser, logs into linked in
+# Also creates the Raw Data folders, etc
 def scraper_log_in():
+    convenient_methods.create_folders()
     options = webdriver.ChromeOptions()
     options.add_argument("--start-maximized") #opens chrome in full screen
     options.add_experimental_option('detach', True)
@@ -45,6 +41,9 @@ def scraper_log_in():
     login_button.click()
     return driver
 
+# Searches the webpage using various key spots in the HTML of linkedIn's page.
+# Pulls the text out of HTML and stores it to a JSON file, originally keeping the HTML code
+# and the text in general using a Selenium built in. 
 
 def search_and_scrape(search , post_total,driver):
     
@@ -84,7 +83,7 @@ def search_and_scrape(search , post_total,driver):
         time.sleep(3)
    
     posts_data = [{"post_html": html, "post_text": text} for html,text in posts_data]    
-    with open(f'Raw Data/{search}.json','w', encoding='utf-8') as json_file:
+    with open(f'Raw_Data/{search}.json','a', encoding='utf-8') as json_file:
         json.dump(posts_data, json_file, ensure_ascii=False, indent=4)
         
     print(f'Scrape successful? {len(posts_data)} posts saved to {search}.json')
